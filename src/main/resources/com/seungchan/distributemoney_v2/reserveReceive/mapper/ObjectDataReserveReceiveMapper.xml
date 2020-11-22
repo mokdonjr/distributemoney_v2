@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seungchan.distributemoney_v2.reserveReceive.mapper.ObjectDataReserveReceiveMapper">
+
+    <select id="selectObjectDataReserveReceive" resultType="com.seungchan.distributemoney_v2.reserveReceive.data.ObjectDataReserveReceive">
+        SELECT
+        *
+        FROM RESERVE_RECEIVE
+        WHERE
+        `reserve_receive_id` = #{reserveReceiveId}
+    </select>
+
+
+    <select id="selectObjectDataReserveReceiveForUpdate" resultType="com.seungchan.distributemoney_v2.reserveReceive.data.ObjectDataReserveReceive">
+        SELECT
+        *
+        FROM RESERVE_RECEIVE
+        WHERE
+        `reserve_receive_id` = #{reserveReceiveId}
+        FOR UPDATE
+    </select>
+
+
+    <sql id="insertObjectDataReserveReceive">
+        INSERT INTO RESERVE_RECEIVE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="objectDataReserveReceive.reserveReceiveId != null">
+                `reserve_receive_id`,
+            </if>
+            <if test="objectDataReserveReceive.roomId != null">
+                `room_id`,
+            </if>
+            <if test="objectDataReserveReceive.userId != null">
+                `user_id`,
+            </if>
+            <if test="objectDataReserveReceive.token != null">
+                `token`,
+            </if>
+            <if test="objectDataReserveReceive.createAt != null">
+                `create_at`,
+            </if>
+            <if test="objectDataReserveReceive.isEnd != null">
+                `is_end`,
+            </if>
+            <if test="objectDataReserveReceive.endAt != null">
+                `end_at`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="objectDataReserveReceive.reserveReceiveId != null">
+                #{objectDataReserveReceive.reserveReceiveId},
+            </if>
+            <if test="objectDataReserveReceive.roomId != null">
+                #{objectDataReserveReceive.roomId},
+            </if>
+            <if test="objectDataReserveReceive.userId != null">
+                #{objectDataReserveReceive.userId},
+            </if>
+            <if test="objectDataReserveReceive.token != null">
+                #{objectDataReserveReceive.token},
+            </if>
+            <if test="objectDataReserveReceive.createAt != null">
+                #{objectDataReserveReceive.createAt},
+            </if>
+            <if test="objectDataReserveReceive.isEnd != null">
+                #{objectDataReserveReceive.isEnd},
+            </if>
+            <if test="objectDataReserveReceive.endAt != null">
+                #{objectDataReserveReceive.endAt},
+            </if>
+        </trim>
+    </sql>
+
+
+    <insert id="insertObjectDataReserveReceive" parameterType="com.seungchan.distributemoney_v2.reserveReceive.data.ObjectDataReserveReceive">
+        <include refid="insertObjectDataReserveReceive"/>
+        <selectKey keyProperty="objectDataReserveReceive.reserveReceiveId" resultType="long" order="AFTER">
+            <if test="objectDataReserveReceive.reserveReceiveId != null">
+                SELECT #{objectDataReserveReceive.reserveReceiveId} AS reserve_receive_id FROM DUAL
+            </if>
+            <if test="objectDataReserveReceive.reserveReceiveId == null">
+                SELECT LAST_INSERT_ID()
+            </if>
+        </selectKey>
+    </insert>
+
+
+    <insert id="upsertObjectDataReserveReceive" parameterType="com.seungchan.distributemoney_v2.reserveReceive.data.ObjectDataReserveReceive">
+        <include refid="insertObjectDataReserveReceive"/>
+        <selectKey keyProperty="objectDataReserveReceive.reserveReceiveId" resultType="long" order="AFTER">
+            <if test="objectDataReserveReceive.reserveReceiveId != null">
+                SELECT #{objectDataReserveReceive.reserveReceiveId} AS reserve_receive_id FROM DUAL
+            </if>
+            <if test="objectDataReserveReceive.reserveReceiveId == null">
+                SELECT LAST_INSERT_ID()
+            </if>
+        </selectKey>
+        ON DUPLICATE KEY UPDATE
+        `room_id` = VALUES(`room_id`),
+        `user_id` = VALUES(`user_id`),
+        `token` = VALUES(`token`),
+        `create_at` = VALUES(`create_at`),
+        `is_end` = VALUES(`is_end`),
+        `end_at` = VALUES(`end_at`)
+    </insert>
+
+
+    <sql id="insertObjectDataReserveReceiveList">
+        INSERT INTO RESERVE_RECEIVE
+        (
+        `room_id`,
+        `user_id`,
+        `token`,
+        `create_at`,
+        `is_end`,
+        `end_at`
+        )
+        VALUES
+        <foreach collection = "objectDataReserveReceiveList" index = "index" item = "item" separator = ",">
+            (
+            #{item.roomId},
+            #{item.userId},
+            #{item.token},
+            #{item.createAt},
+            #{item.isEnd},
+            #{item.endAt}
+            )
+        </foreach>
+    </sql>
+
+
+    <insert id="insertObjectDataReserveReceiveList" parameterType="com.seungchan.distributemoney_v2.reserveReceive.data.ObjectDataReserveReceive">
+        <include refid="insertObjectDataReserveReceiveList"/>
+    </insert>
+
+    <insert id="upsertObjectDataReserveReceiveList" parameterType="com.seungchan.distributemoney_v2.reserveReceive.data.ObjectDataReserveReceive">
+        <include refid="insertObjectDataReserveReceiveList"/>
+        ON DUPLICATE KEY UPDATE
+        `room_id` = VALUES(`room_id`),
+        `user_id` = VALUES(`user_id`),
+        `token` = VALUES(`token`),
+        `create_at` = VALUES(`create_at`),
+        `is_end` = VALUES(`is_end`),
+        `end_at` = VALUES(`end_at`)
+    </insert>
+
+
+    <update id="updateObjectDataReserveReceive" parameterType="com.seungchan.distributemoney_v2.reserveReceive.data.ObjectDataReserveReceive">
+        UPDATE RESERVE_RECEIVE
+        <set>
+            <if test="objectDataReserveReceive.roomId != null">
+                `room_id` = #{objectDataReserveReceive.roomId},
+            </if>
+            <if test="objectDataReserveReceive.userId != null">
+                `user_id` = #{objectDataReserveReceive.userId},
+            </if>
+            <if test="objectDataReserveReceive.token != null">
+                `token` = #{objectDataReserveReceive.token},
+            </if>
+            <if test="objectDataReserveReceive.createAt != null">
+                `create_at` = #{objectDataReserveReceive.createAt},
+            </if>
+            <if test="objectDataReserveReceive.isEnd != null">
+                `is_end` = #{objectDataReserveReceive.isEnd},
+            </if>
+            <if test="objectDataReserveReceive.endAt != null">
+                `end_at` = #{objectDataReserveReceive.endAt},
+            </if>
+        </set>
+        WHERE
+        `reserve_receive_id` = #{objectDataReserveReceive.reserveReceiveId}
+    </update>
+
+
+    <delete id="deleteObjectDataReserveReceive">
+        DELETE FROM RESERVE_RECEIVE
+        WHERE
+        `reserve_receive_id` = #{reserveReceiveId}
+    </delete>
+
+</mapper>

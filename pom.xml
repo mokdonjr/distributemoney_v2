@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.4.0</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.seungchan</groupId>
+	<artifactId>distributemoney_v2</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>distributemoney_v2</name>
+	<description>머니뿌리기 v2</description>
+
+	<properties>
+		<java.version>11</java.version>
+
+		<!-- DB 타겟 -->
+		<database.host>127.0.0.1</database.host>
+		<database.port>3306</database.port>
+		<database.username>root</database.username>
+		<database.password>seungchan</database.password>
+		<database.schema>DISTRIBUTE_MONEY</database.schema>
+		<database.url>jdbc:mysql://${database.host}:${database.port}?serverTimezone=Asia/Seoul</database.url>
+		<docker.repository></docker.repository>
+		<docker.image></docker.image>
+		<docker.username></docker.username>
+		<docker.password></docker.password>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>real</id>
+			<properties>
+				<database.host>52.79.219.17</database.host>
+				<database.username>root</database.username>
+				<database.password>seungchan</database.password>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.google.cloud.tools</groupId>
+						<artifactId>jib-maven-plugin</artifactId>
+						<version>2.1.0</version>
+						<configuration>
+							<!-- 베이스 이미지 -->
+							<from>
+								<image>openjdk:11.0.4-jdk-slim</image>
+							</from>
+							<!-- 타겟 어플리케이션 이미지 -->
+							<to>
+								<image>${docker.repository}/${docker.image}</image>
+								<auth>
+									<username>${docker.username}</username>
+									<password>${docker.password}</password>
+								</auth>
+								<tags>
+									<tag>latest</tag>
+								</tags>
+							</to>
+							<allowInsecureRegistries>true</allowInsecureRegistries>
+							<container>
+								<environment>
+									<ENV_VAR>VALUE</ENV_VAR>
+								</environment>
+								<jvmFlags>
+									<jvmFlag>-Xms512m</jvmFlag>
+									<jvmFlag>-Xdebug</jvmFlag>
+								</jvmFlags>
+								<entrypoint>
+								</entrypoint>
+								<ports>
+									<port>8080</port>
+								</ports>
+								<creationTime>
+									USE_CURRENT_TIMESTAMP
+								</creationTime>
+							</container>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>pl.project13.maven</groupId>
+						<artifactId>git-commit-id-plugin</artifactId>
+						<version>4.0.0</version>
+						<executions>
+							<execution>
+								<id>get-the-git-infos</id>
+								<goals>
+									<goal>revision</goal>
+								</goals>
+								<phase>initialize</phase>
+							</execution>
+							<execution>
+								<id>validate-the-git-infos</id>
+								<goals>
+									<goal>validateRevision</goal>
+								</goals>
+								<!-- *NOTE*: The default phase of validateRevision is verify, but in case you want to
+                                             change it, you can do so by adding the phase here -->
+								<phase>package</phase>
+							</execution>
+						</executions>
+
+						<!-- https://github.com/git-commit-id/git-commit-id-maven-plugin/blob/master/maven/docs/using-the-plugin.md -->
+						<configuration>
+							<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+							<prefix>git</prefix>
+							<dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
+							<dateFormatTimeZone>${user.timezone}</dateFormatTimeZone>
+							<verbose>true</verbose>
+
+							<!-- 실패처리 -->
+							<failOnNoGitDirectory>true</failOnNoGitDirectory>
+							<failOnUnableToExtractRepoInfo>true</failOnUnableToExtractRepoInfo>
+							<nativeGitTimeoutInMs>30000</nativeGitTimeoutInMs>
+
+							<!-- 기록 방법 -->
+							<generateGitPropertiesFile>true</generateGitPropertiesFile>
+							<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+							<format>properties</format>
+							<!--					<includeOnlyProperties>-->
+							<!--						<includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>-->
+							<!--						<includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>-->
+							<!--						<includeOnlyProperty>^git.user.*$</includeOnlyProperty>-->
+							<!--					</includeOnlyProperties>-->
+							<commitIdGenerationMode>full</commitIdGenerationMode>
+
+							<!-- System.getProperties() 기록 -->
+							<injectIntoSysProperties>true</injectIntoSysProperties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- api 문서 자동화 -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+
+		<!-- DB 관련 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.1.3</version>
+		</dependency>
+
+
+		<!-- 테스트 관련 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.4</version>
+		</dependency>
+
+		<!-- DB 마이그레이션 -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<!-- <version>6.1.0</version> -->
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<delimiters>
+						<delimiter>@</delimiter>
+					</delimiters>
+					<useDefaultDelimiters>false</useDefaultDelimiters>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>flywayinit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>repair</goal>
+							<goal>migrate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<url>${database.url}</url>
+					<user>${database.username}</user>
+					<password>${database.password}</password>
+					<schemas>
+						<schema>${database.schema}</schema>
+					</schemas>
+					<cleanDisabled>true</cleanDisabled>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

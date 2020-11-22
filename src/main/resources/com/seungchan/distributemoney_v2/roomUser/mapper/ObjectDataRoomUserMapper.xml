@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seungchan.distributemoney_v2.roomUser.mapper.ObjectDataRoomUserMapper">
+
+    <select id="selectObjectDataRoomUser" resultType="com.seungchan.distributemoney_v2.roomUser.data.ObjectDataRoomUser">
+        SELECT
+        *
+        FROM ROOM_USER
+        WHERE
+        `room_id` = #{roomId}
+        AND
+        `user_id` = #{userId}
+    </select>
+
+
+    <select id="selectObjectDataRoomUserForUpdate" resultType="com.seungchan.distributemoney_v2.roomUser.data.ObjectDataRoomUser">
+        SELECT
+        *
+        FROM ROOM_USER
+        WHERE
+        `room_id` = #{roomId}
+        AND
+        `user_id` = #{userId}
+        FOR UPDATE
+    </select>
+
+    <select id="selectObjectDataRoomUserListByRoomId" resultType="com.seungchan.distributemoney_v2.roomUser.data.ObjectDataRoomUser">
+        SELECT *
+        FROM ROOM_USER
+        WHERE `room_id` = #{roomId}
+    </select>
+
+    <sql id="insertObjectDataRoomUser">
+        INSERT INTO ROOM_USER
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="objectDataRoomUser.roomId != null">
+                `room_id`,
+            </if>
+            <if test="objectDataRoomUser.userId != null">
+                `user_id`,
+            </if>
+            <if test="objectDataRoomUser.userName != null">
+                `user_name`,
+            </if>
+            <if test="objectDataRoomUser.createAt != null">
+                `create_at`,
+            </if>
+            <if test="objectDataRoomUser.isDelete != null">
+                `is_delete`,
+            </if>
+            <if test="objectDataRoomUser.deleteAt != null">
+                `delete_at`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="objectDataRoomUser.roomId != null">
+                #{objectDataRoomUser.roomId},
+            </if>
+            <if test="objectDataRoomUser.userId != null">
+                #{objectDataRoomUser.userId},
+            </if>
+            <if test="objectDataRoomUser.userName != null">
+                #{objectDataRoomUser.userName},
+            </if>
+            <if test="objectDataRoomUser.createAt != null">
+                #{objectDataRoomUser.createAt},
+            </if>
+            <if test="objectDataRoomUser.isDelete != null">
+                #{objectDataRoomUser.isDelete},
+            </if>
+            <if test="objectDataRoomUser.deleteAt != null">
+                #{objectDataRoomUser.deleteAt},
+            </if>
+        </trim>
+    </sql>
+
+
+    <insert id="insertObjectDataRoomUser" parameterType="com.seungchan.distributemoney_v2.roomUser.data.ObjectDataRoomUser">
+        <include refid="insertObjectDataRoomUser"/>
+    </insert>
+
+
+    <insert id="upsertObjectDataRoomUser" parameterType="com.seungchan.distributemoney_v2.roomUser.data.ObjectDataRoomUser">
+        <include refid="insertObjectDataRoomUser"/>
+        ON DUPLICATE KEY UPDATE
+        `user_name` = VALUES(`user_name`),
+        `create_at` = VALUES(`create_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <sql id="insertObjectDataRoomUserList">
+        INSERT INTO ROOM_USER
+        (
+        `room_id`,
+        `user_id`,
+        `user_name`,
+        `create_at`,
+        `is_delete`,
+        `delete_at`
+        )
+        VALUES
+        <foreach collection = "objectDataRoomUserList" index = "index" item = "item" separator = ",">
+            (
+            #{item.roomId},
+            #{item.userId},
+            #{item.userName},
+            #{item.createAt},
+            #{item.isDelete},
+            #{item.deleteAt}
+            )
+        </foreach>
+    </sql>
+
+
+    <insert id="insertObjectDataRoomUserList" parameterType="com.seungchan.distributemoney_v2.roomUser.data.ObjectDataRoomUser">
+        <include refid="insertObjectDataRoomUserList"/>
+    </insert>
+
+    <insert id="upsertObjectDataRoomUserList" parameterType="com.seungchan.distributemoney_v2.roomUser.data.ObjectDataRoomUser">
+        <include refid="insertObjectDataRoomUserList"/>
+        ON DUPLICATE KEY UPDATE
+        `user_name` = VALUES(`user_name`),
+        `create_at` = VALUES(`create_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <update id="updateObjectDataRoomUser" parameterType="com.seungchan.distributemoney_v2.roomUser.data.ObjectDataRoomUser">
+        UPDATE ROOM_USER
+        <set>
+            <if test="objectDataRoomUser.userName != null">
+                `user_name` = #{objectDataRoomUser.userName},
+            </if>
+            <if test="objectDataRoomUser.createAt != null">
+                `create_at` = #{objectDataRoomUser.createAt},
+            </if>
+            <if test="objectDataRoomUser.isDelete != null">
+                `is_delete` = #{objectDataRoomUser.isDelete},
+            </if>
+            <if test="objectDataRoomUser.deleteAt != null">
+                `delete_at` = #{objectDataRoomUser.deleteAt},
+            </if>
+        </set>
+        WHERE
+        `room_id` = #{objectDataRoomUser.roomId}
+        AND
+        `user_id` = #{objectDataRoomUser.userId}
+    </update>
+
+
+    <delete id="deleteObjectDataRoomUser">
+        DELETE FROM ROOM_USER
+        WHERE
+        `room_id` = #{roomId}
+        AND
+        `user_id` = #{userId}
+    </delete>
+
+</mapper>

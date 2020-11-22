@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seungchan.distributemoney_v2.user.mapper.ObjectDataUserMapper">
+
+    <select id="selectObjectDataUser" resultType="com.seungchan.distributemoney_v2.user.data.ObjectDataUser">
+        SELECT
+        *
+        FROM USER
+        WHERE
+        `user_id` = #{userId}
+    </select>
+
+
+    <select id="selectObjectDataUserForUpdate" resultType="com.seungchan.distributemoney_v2.user.data.ObjectDataUser">
+        SELECT
+        *
+        FROM USER
+        WHERE
+        `user_id` = #{userId}
+        FOR UPDATE
+    </select>
+
+
+    <sql id="insertObjectDataUser">
+        INSERT INTO USER
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="objectDataUser.userId != null">
+                `user_id`,
+            </if>
+            <if test="objectDataUser.userName != null">
+                `user_name`,
+            </if>
+            <if test="objectDataUser.balance != null">
+                `balance`,
+            </if>
+            <if test="objectDataUser.lastUpdateAt != null">
+                `last_update_at`,
+            </if>
+            <if test="objectDataUser.modBalance != null">
+                `mod_balance`,
+            </if>
+            <if test="objectDataUser.createAt != null">
+                `create_at`,
+            </if>
+            <if test="objectDataUser.isBlock != null">
+                `is_block`,
+            </if>
+            <if test="objectDataUser.blockAt != null">
+                `block_at`,
+            </if>
+            <if test="objectDataUser.isDelete != null">
+                `is_delete`,
+            </if>
+            <if test="objectDataUser.deleteAt != null">
+                `delete_at`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="objectDataUser.userId != null">
+                #{objectDataUser.userId},
+            </if>
+            <if test="objectDataUser.userName != null">
+                #{objectDataUser.userName},
+            </if>
+            <if test="objectDataUser.balance != null">
+                #{objectDataUser.balance},
+            </if>
+            <if test="objectDataUser.lastUpdateAt != null">
+                #{objectDataUser.lastUpdateAt},
+            </if>
+            <if test="objectDataUser.modBalance != null">
+                #{objectDataUser.modBalance},
+            </if>
+            <if test="objectDataUser.createAt != null">
+                #{objectDataUser.createAt},
+            </if>
+            <if test="objectDataUser.isBlock != null">
+                #{objectDataUser.isBlock},
+            </if>
+            <if test="objectDataUser.blockAt != null">
+                #{objectDataUser.blockAt},
+            </if>
+            <if test="objectDataUser.isDelete != null">
+                #{objectDataUser.isDelete},
+            </if>
+            <if test="objectDataUser.deleteAt != null">
+                #{objectDataUser.deleteAt},
+            </if>
+        </trim>
+    </sql>
+
+
+    <insert id="insertObjectDataUser" parameterType="com.seungchan.distributemoney_v2.user.data.ObjectDataUser">
+        <include refid="insertObjectDataUser"/>
+    </insert>
+
+
+    <insert id="upsertObjectDataUser" parameterType="com.seungchan.distributemoney_v2.user.data.ObjectDataUser">
+        <include refid="insertObjectDataUser"/>
+        ON DUPLICATE KEY UPDATE
+        `user_name` = VALUES(`user_name`),
+        `balance` = VALUES(`balance`),
+        `last_update_at` = VALUES(`last_update_at`),
+        `mod_balance` = VALUES(`mod_balance`),
+        `create_at` = VALUES(`create_at`),
+        `is_block` = VALUES(`is_block`),
+        `block_at` = VALUES(`block_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <sql id="insertObjectDataUserList">
+        INSERT INTO USER
+        (
+        `user_id`,
+        `user_name`,
+        `balance`,
+        `last_update_at`,
+        `mod_balance`,
+        `create_at`,
+        `is_block`,
+        `block_at`,
+        `is_delete`,
+        `delete_at`
+        )
+        VALUES
+        <foreach collection = "objectDataUserList" index = "index" item = "item" separator = ",">
+            (
+            #{item.userId},
+            #{item.userName},
+            #{item.balance},
+            #{item.lastUpdateAt},
+            #{item.modBalance},
+            #{item.createAt},
+            #{item.isBlock},
+            #{item.blockAt},
+            #{item.isDelete},
+            #{item.deleteAt}
+            )
+        </foreach>
+    </sql>
+
+
+    <insert id="insertObjectDataUserList" parameterType="com.seungchan.distributemoney_v2.user.data.ObjectDataUser">
+        <include refid="insertObjectDataUserList"/>
+    </insert>
+
+    <insert id="upsertObjectDataUserList" parameterType="com.seungchan.distributemoney_v2.user.data.ObjectDataUser">
+        <include refid="insertObjectDataUserList"/>
+        ON DUPLICATE KEY UPDATE
+        `user_name` = VALUES(`user_name`),
+        `balance` = VALUES(`balance`),
+        `last_update_at` = VALUES(`last_update_at`),
+        `mod_balance` = VALUES(`mod_balance`),
+        `create_at` = VALUES(`create_at`),
+        `is_block` = VALUES(`is_block`),
+        `block_at` = VALUES(`block_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <update id="updateObjectDataUser" parameterType="com.seungchan.distributemoney_v2.user.data.ObjectDataUser">
+        UPDATE USER
+        <set>
+            <if test="objectDataUser.userName != null">
+                `user_name` = #{objectDataUser.userName},
+            </if>
+            <if test="objectDataUser.balance != null">
+                `balance` = #{objectDataUser.balance},
+            </if>
+            <if test="objectDataUser.lastUpdateAt != null">
+                `last_update_at` = #{objectDataUser.lastUpdateAt},
+            </if>
+            <if test="objectDataUser.modBalance != null">
+                `mod_balance` = #{objectDataUser.modBalance},
+            </if>
+            <if test="objectDataUser.createAt != null">
+                `create_at` = #{objectDataUser.createAt},
+            </if>
+            <if test="objectDataUser.isBlock != null">
+                `is_block` = #{objectDataUser.isBlock},
+            </if>
+            <if test="objectDataUser.blockAt != null">
+                `block_at` = #{objectDataUser.blockAt},
+            </if>
+            <if test="objectDataUser.isDelete != null">
+                `is_delete` = #{objectDataUser.isDelete},
+            </if>
+            <if test="objectDataUser.deleteAt != null">
+                `delete_at` = #{objectDataUser.deleteAt},
+            </if>
+        </set>
+        WHERE
+        `user_id` = #{objectDataUser.userId}
+    </update>
+
+
+    <delete id="deleteObjectDataUser">
+        DELETE FROM USER
+        WHERE
+        `user_id` = #{userId}
+    </delete>
+
+</mapper>

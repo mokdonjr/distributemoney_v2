@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seungchan.distributemoney_v2.distributeSeq.mapper.ObjectDataDistributeSeqMapper">
+
+    <select id="selectObjectDataDistributeSeq" resultType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        SELECT
+        *
+        FROM DISTRIBUTE_SEQ
+        WHERE
+        `room_id` = #{roomId}
+        AND
+        `token` = #{token}
+        AND
+        `seq` = #{seq}
+    </select>
+
+
+    <select id="selectObjectDataDistributeSeqForUpdate" resultType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        SELECT
+        *
+        FROM DISTRIBUTE_SEQ
+        WHERE
+        `room_id` = #{roomId}
+        AND
+        `token` = #{token}
+        AND
+        `seq` = #{seq}
+        FOR UPDATE
+    </select>
+
+
+    <select id="selectObjectDataDistributeSeqToReceive" resultType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        SELECT *
+        FROM DISTRIBUTE_SEQ
+        WHERE `room_id` = #{roomId}
+            AND `token` = #{token}
+            AND `is_receive` = 0
+        ORDER BY `seq` ASC
+        LIMIT 1
+        FOR UPDATE
+    </select>
+
+    <select id="selectCountDistributeSeqToReceive" resultType="int">
+        SELECT COUNT(1)
+        FROM DISTRIBUTE_SEQ
+        WHERE `room_id` = #{roomId}
+            AND `token` = #{token}
+            AND `is_receive` = 0
+    </select>
+
+    <select id="selectObjectDataDistributeSeqAll" resultType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        SELECT *
+        FROM DISTRIBUTE_SEQ
+        WHERE
+        `room_id` = #{roomId}
+        AND
+        `token` = #{token}
+    </select>
+
+
+    <select id="selectObjectDataDistributeSeqAllForUpdate" resultType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        SELECT *
+        FROM DISTRIBUTE_SEQ
+        WHERE
+        `room_id` = #{roomId}
+        AND
+        `token` = #{token}
+        FOR UPDATE
+    </select>
+
+
+    <sql id="insertObjectDataDistributeSeq">
+        INSERT INTO DISTRIBUTE_SEQ
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="objectDataDistributeSeq.roomId != null">
+                `room_id`,
+            </if>
+            <if test="objectDataDistributeSeq.userId != null">
+                `user_id`,
+            </if>
+            <if test="objectDataDistributeSeq.token != null">
+                `token`,
+            </if>
+            <if test="objectDataDistributeSeq.seq != null">
+                `seq`,
+            </if>
+            <if test="objectDataDistributeSeq.value != null">
+                `value`,
+            </if>
+            <if test="objectDataDistributeSeq.receiveUserId != null">
+                `receive_user_id`,
+            </if>
+            <if test="objectDataDistributeSeq.isReceive != null">
+                `is_receive`,
+            </if>
+            <if test="objectDataDistributeSeq.receiveAt != null">
+                `receive_at`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="objectDataDistributeSeq.roomId != null">
+                #{objectDataDistributeSeq.roomId},
+            </if>
+            <if test="objectDataDistributeSeq.userId != null">
+                #{objectDataDistributeSeq.userId},
+            </if>
+            <if test="objectDataDistributeSeq.token != null">
+                #{objectDataDistributeSeq.token},
+            </if>
+            <if test="objectDataDistributeSeq.seq != null">
+                #{objectDataDistributeSeq.seq},
+            </if>
+            <if test="objectDataDistributeSeq.value != null">
+                #{objectDataDistributeSeq.value},
+            </if>
+            <if test="objectDataDistributeSeq.receiveUserId != null">
+                #{objectDataDistributeSeq.receiveUserId},
+            </if>
+            <if test="objectDataDistributeSeq.isReceive != null">
+                #{objectDataDistributeSeq.isReceive},
+            </if>
+            <if test="objectDataDistributeSeq.receiveAt != null">
+                #{objectDataDistributeSeq.receiveAt},
+            </if>
+        </trim>
+    </sql>
+
+
+    <insert id="insertObjectDataDistributeSeq" parameterType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        <include refid="insertObjectDataDistributeSeq"/>
+    </insert>
+
+
+    <insert id="upsertObjectDataDistributeSeq" parameterType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        <include refid="insertObjectDataDistributeSeq"/>
+        ON DUPLICATE KEY UPDATE
+        `user_id` = VALUES(`user_id`),
+        `value` = VALUES(`value`),
+        `receive_user_id` = VALUES(`receive_user_id`),
+        `is_receive` = VALUES(`is_receive`),
+        `receive_at` = VALUES(`receive_at`)
+    </insert>
+
+
+    <sql id="insertObjectDataDistributeSeqList">
+        INSERT INTO DISTRIBUTE_SEQ
+        (
+        `room_id`,
+        `user_id`,
+        `token`,
+        `seq`,
+        `value`,
+        `receive_user_id`,
+        `is_receive`,
+        `receive_at`
+        )
+        VALUES
+        <foreach collection = "objectDataDistributeSeqList" index = "index" item = "item" separator = ",">
+            (
+            #{item.roomId},
+            #{item.userId},
+            #{item.token},
+            #{item.seq},
+            #{item.value},
+            #{item.receiveUserId},
+            #{item.isReceive},
+            #{item.receiveAt}
+            )
+        </foreach>
+    </sql>
+
+
+    <insert id="insertObjectDataDistributeSeqList" parameterType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        <include refid="insertObjectDataDistributeSeqList"/>
+    </insert>
+
+    <insert id="upsertObjectDataDistributeSeqList" parameterType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        <include refid="insertObjectDataDistributeSeqList"/>
+        ON DUPLICATE KEY UPDATE
+        `user_id` = VALUES(`user_id`),
+        `value` = VALUES(`value`),
+        `receive_user_id` = VALUES(`receive_user_id`),
+        `is_receive` = VALUES(`is_receive`),
+        `receive_at` = VALUES(`receive_at`)
+    </insert>
+
+
+    <update id="updateObjectDataDistributeSeq" parameterType="com.seungchan.distributemoney_v2.distributeSeq.data.ObjectDataDistributeSeq">
+        UPDATE DISTRIBUTE_SEQ
+        <set>
+            <if test="objectDataDistributeSeq.userId != null">
+                `user_id` = #{objectDataDistributeSeq.userId},
+            </if>
+            <if test="objectDataDistributeSeq.value != null">
+                `value` = #{objectDataDistributeSeq.value},
+            </if>
+            <if test="objectDataDistributeSeq.receiveUserId != null">
+                `receive_user_id` = #{objectDataDistributeSeq.receiveUserId},
+            </if>
+            <if test="objectDataDistributeSeq.isReceive != null">
+                `is_receive` = #{objectDataDistributeSeq.isReceive},
+            </if>
+            <if test="objectDataDistributeSeq.receiveAt != null">
+                `receive_at` = #{objectDataDistributeSeq.receiveAt},
+            </if>
+        </set>
+        WHERE
+        `room_id` = #{objectDataDistributeSeq.roomId}
+        AND
+        `token` = #{objectDataDistributeSeq.token}
+        AND
+        `seq` = #{objectDataDistributeSeq.seq}
+    </update>
+
+
+    <delete id="deleteObjectDataDistributeSeq">
+        DELETE FROM DISTRIBUTE_SEQ
+        WHERE
+        `room_id` = #{roomId}
+        AND
+        `token` = #{token}
+        AND
+        `seq` = #{seq}
+    </delete>
+
+</mapper>

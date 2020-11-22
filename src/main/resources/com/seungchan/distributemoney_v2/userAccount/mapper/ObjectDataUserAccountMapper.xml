@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seungchan.distributemoney_v2.userAccount.mapper.ObjectDataUserAccountMapper">
+
+    <select id="selectObjectDataUserAccount" resultType="com.seungchan.distributemoney_v2.userAccount.data.ObjectDataUserAccount">
+        SELECT
+        *
+        FROM USER_ACCOUNT
+        WHERE
+        `user_id` = #{userId}
+        AND
+        `bank_id` = #{bankId}
+        AND
+        `bank_account_number` = #{bankAccountNumber}
+    </select>
+
+
+    <select id="selectObjectDataUserAccountForUpdate" resultType="com.seungchan.distributemoney_v2.userAccount.data.ObjectDataUserAccount">
+        SELECT
+        *
+        FROM USER_ACCOUNT
+        WHERE
+        `user_id` = #{userId}
+        AND
+        `bank_id` = #{bankId}
+        AND
+        `bank_account_number` = #{bankAccountNumber}
+        FOR UPDATE
+    </select>
+
+
+    <select id="selectObjectDataUserAccountByUserId" resultType="com.seungchan.distributemoney_v2.userAccount.data.ObjectDataUserAccount">
+        SELECT *
+        FROM USER_ACCOUNT
+        WHERE `user_id` = #{userId}
+    </select>
+
+
+    <sql id="insertObjectDataUserAccount">
+        INSERT INTO USER_ACCOUNT
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="objectDataUserAccount.userId != null">
+                `user_id`,
+            </if>
+            <if test="objectDataUserAccount.bankId != null">
+                `bank_id`,
+            </if>
+            <if test="objectDataUserAccount.bankAccountNumber != null">
+                `bank_account_number`,
+            </if>
+            <if test="objectDataUserAccount.createAt != null">
+                `create_at`,
+            </if>
+            <if test="objectDataUserAccount.isBlock != null">
+                `is_block`,
+            </if>
+            <if test="objectDataUserAccount.blockAt != null">
+                `block_at`,
+            </if>
+            <if test="objectDataUserAccount.isDelete != null">
+                `is_delete`,
+            </if>
+            <if test="objectDataUserAccount.deleteAt != null">
+                `delete_at`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="objectDataUserAccount.userId != null">
+                #{objectDataUserAccount.userId},
+            </if>
+            <if test="objectDataUserAccount.bankId != null">
+                #{objectDataUserAccount.bankId},
+            </if>
+            <if test="objectDataUserAccount.bankAccountNumber != null">
+                #{objectDataUserAccount.bankAccountNumber},
+            </if>
+            <if test="objectDataUserAccount.createAt != null">
+                #{objectDataUserAccount.createAt},
+            </if>
+            <if test="objectDataUserAccount.isBlock != null">
+                #{objectDataUserAccount.isBlock},
+            </if>
+            <if test="objectDataUserAccount.blockAt != null">
+                #{objectDataUserAccount.blockAt},
+            </if>
+            <if test="objectDataUserAccount.isDelete != null">
+                #{objectDataUserAccount.isDelete},
+            </if>
+            <if test="objectDataUserAccount.deleteAt != null">
+                #{objectDataUserAccount.deleteAt},
+            </if>
+        </trim>
+    </sql>
+
+
+    <insert id="insertObjectDataUserAccount" parameterType="com.seungchan.distributemoney_v2.userAccount.data.ObjectDataUserAccount">
+        <include refid="insertObjectDataUserAccount"/>
+    </insert>
+
+
+    <insert id="upsertObjectDataUserAccount" parameterType="com.seungchan.distributemoney_v2.userAccount.data.ObjectDataUserAccount">
+        <include refid="insertObjectDataUserAccount"/>
+        ON DUPLICATE KEY UPDATE
+        `create_at` = VALUES(`create_at`),
+        `is_block` = VALUES(`is_block`),
+        `block_at` = VALUES(`block_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <sql id="insertObjectDataUserAccountList">
+        INSERT INTO USER_ACCOUNT
+        (
+        `user_id`,
+        `bank_id`,
+        `bank_account_number`,
+        `create_at`,
+        `is_block`,
+        `block_at`,
+        `is_delete`,
+        `delete_at`
+        )
+        VALUES
+        <foreach collection = "objectDataUserAccountList" index = "index" item = "item" separator = ",">
+            (
+            #{item.userId},
+            #{item.bankId},
+            #{item.bankAccountNumber},
+            #{item.createAt},
+            #{item.isBlock},
+            #{item.blockAt},
+            #{item.isDelete},
+            #{item.deleteAt}
+            )
+        </foreach>
+    </sql>
+
+
+    <insert id="insertObjectDataUserAccountList" parameterType="com.seungchan.distributemoney_v2.userAccount.data.ObjectDataUserAccount">
+        <include refid="insertObjectDataUserAccountList"/>
+    </insert>
+
+    <insert id="upsertObjectDataUserAccountList" parameterType="com.seungchan.distributemoney_v2.userAccount.data.ObjectDataUserAccount">
+        <include refid="insertObjectDataUserAccountList"/>
+        ON DUPLICATE KEY UPDATE
+        `create_at` = VALUES(`create_at`),
+        `is_block` = VALUES(`is_block`),
+        `block_at` = VALUES(`block_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <update id="updateObjectDataUserAccount" parameterType="com.seungchan.distributemoney_v2.userAccount.data.ObjectDataUserAccount">
+        UPDATE USER_ACCOUNT
+        <set>
+            <if test="objectDataUserAccount.createAt != null">
+                `create_at` = #{objectDataUserAccount.createAt},
+            </if>
+            <if test="objectDataUserAccount.isBlock != null">
+                `is_block` = #{objectDataUserAccount.isBlock},
+            </if>
+            <if test="objectDataUserAccount.blockAt != null">
+                `block_at` = #{objectDataUserAccount.blockAt},
+            </if>
+            <if test="objectDataUserAccount.isDelete != null">
+                `is_delete` = #{objectDataUserAccount.isDelete},
+            </if>
+            <if test="objectDataUserAccount.deleteAt != null">
+                `delete_at` = #{objectDataUserAccount.deleteAt},
+            </if>
+        </set>
+        WHERE
+        `user_id` = #{objectDataUserAccount.userId}
+        AND
+        `bank_id` = #{objectDataUserAccount.bankId}
+        AND
+        `bank_account_number` = #{objectDataUserAccount.bankAccountNumber}
+    </update>
+
+
+    <delete id="deleteObjectDataUserAccount">
+        DELETE FROM USER_ACCOUNT
+        WHERE
+        `user_id` = #{userId}
+        AND
+        `bank_id` = #{bankId}
+        AND
+        `bank_account_number` = #{bankAccountNumber}
+    </delete>
+
+</mapper>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seungchan.distributemoney_v2.room.mapper.ObjectDataRoomMapper">
+
+    <select id="selectObjectDataRoom" resultType="com.seungchan.distributemoney_v2.room.data.ObjectDataRoom">
+        SELECT
+        *
+        FROM ROOM
+        WHERE
+        `room_id` = #{roomId}
+    </select>
+
+
+    <select id="selectObjectDataRoomForUpdate" resultType="com.seungchan.distributemoney_v2.room.data.ObjectDataRoom">
+        SELECT
+        *
+        FROM ROOM
+        WHERE
+        `room_id` = #{roomId}
+        FOR UPDATE
+    </select>
+
+
+    <sql id="insertObjectDataRoom">
+        INSERT INTO ROOM
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="objectDataRoom.roomId != null">
+                `room_id`,
+            </if>
+            <if test="objectDataRoom.roomName != null">
+                `room_name`,
+            </if>
+            <if test="objectDataRoom.maxUserCount != null">
+                `max_user_count`,
+            </if>
+            <if test="objectDataRoom.createAt != null">
+                `create_at`,
+            </if>
+            <if test="objectDataRoom.isDelete != null">
+                `is_delete`,
+            </if>
+            <if test="objectDataRoom.deleteAt != null">
+                `delete_at`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="objectDataRoom.roomId != null">
+                #{objectDataRoom.roomId},
+            </if>
+            <if test="objectDataRoom.roomName != null">
+                #{objectDataRoom.roomName},
+            </if>
+            <if test="objectDataRoom.maxUserCount != null">
+                #{objectDataRoom.maxUserCount},
+            </if>
+            <if test="objectDataRoom.createAt != null">
+                #{objectDataRoom.createAt},
+            </if>
+            <if test="objectDataRoom.isDelete != null">
+                #{objectDataRoom.isDelete},
+            </if>
+            <if test="objectDataRoom.deleteAt != null">
+                #{objectDataRoom.deleteAt},
+            </if>
+        </trim>
+    </sql>
+
+
+    <insert id="insertObjectDataRoom" parameterType="com.seungchan.distributemoney_v2.room.data.ObjectDataRoom">
+        <include refid="insertObjectDataRoom"/>
+    </insert>
+
+
+    <insert id="upsertObjectDataRoom" parameterType="com.seungchan.distributemoney_v2.room.data.ObjectDataRoom">
+        <include refid="insertObjectDataRoom"/>
+        ON DUPLICATE KEY UPDATE
+        `room_name` = VALUES(`room_name`),
+        `max_user_count` = VALUES(`max_user_count`),
+        `create_at` = VALUES(`create_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <sql id="insertObjectDataRoomList">
+        INSERT INTO ROOM
+        (
+        `room_id`,
+        `room_name`,
+        `max_user_count`,
+        `create_at`,
+        `is_delete`,
+        `delete_at`
+        )
+        VALUES
+        <foreach collection = "objectDataRoomList" index = "index" item = "item" separator = ",">
+            (
+            #{item.roomId},
+            #{item.roomName},
+            #{item.maxUserCount},
+            #{item.createAt},
+            #{item.isDelete},
+            #{item.deleteAt}
+            )
+        </foreach>
+    </sql>
+
+
+    <insert id="insertObjectDataRoomList" parameterType="com.seungchan.distributemoney_v2.room.data.ObjectDataRoom">
+        <include refid="insertObjectDataRoomList"/>
+    </insert>
+
+    <insert id="upsertObjectDataRoomList" parameterType="com.seungchan.distributemoney_v2.room.data.ObjectDataRoom">
+        <include refid="insertObjectDataRoomList"/>
+        ON DUPLICATE KEY UPDATE
+        `room_name` = VALUES(`room_name`),
+        `max_user_count` = VALUES(`max_user_count`),
+        `create_at` = VALUES(`create_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <update id="updateObjectDataRoom" parameterType="com.seungchan.distributemoney_v2.room.data.ObjectDataRoom">
+        UPDATE ROOM
+        <set>
+            <if test="objectDataRoom.roomName != null">
+                `room_name` = #{objectDataRoom.roomName},
+            </if>
+            <if test="objectDataRoom.maxUserCount != null">
+                `max_user_count` = #{objectDataRoom.maxUserCount},
+            </if>
+            <if test="objectDataRoom.createAt != null">
+                `create_at` = #{objectDataRoom.createAt},
+            </if>
+            <if test="objectDataRoom.isDelete != null">
+                `is_delete` = #{objectDataRoom.isDelete},
+            </if>
+            <if test="objectDataRoom.deleteAt != null">
+                `delete_at` = #{objectDataRoom.deleteAt},
+            </if>
+        </set>
+        WHERE
+        `room_id` = #{objectDataRoom.roomId}
+    </update>
+
+
+    <delete id="deleteObjectDataRoom">
+        DELETE FROM ROOM
+        WHERE
+        `room_id` = #{roomId}
+    </delete>
+</mapper>

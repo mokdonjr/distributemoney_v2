@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seungchan.distributemoney_v2.account.mapper.ObjectDataAccountMapper">
+
+    <select id="selectObjectDataAccount" resultType="com.seungchan.distributemoney_v2.account.data.ObjectDataAccount">
+        SELECT
+        *
+        FROM ACCOUNT
+        WHERE
+        `bank_id` = #{bankId}
+        AND
+        `bank_account_number` = #{bankAccountNumber}
+    </select>
+
+
+    <select id="selectObjectDataAccountForUpdate" resultType="com.seungchan.distributemoney_v2.account.data.ObjectDataAccount">
+        SELECT
+        *
+        FROM ACCOUNT
+        WHERE
+        `bank_id` = #{bankId}
+        AND
+        `bank_account_number` = #{bankAccountNumber}
+        FOR UPDATE
+    </select>
+
+
+    <sql id="insertObjectDataAccount">
+        INSERT INTO ACCOUNT
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="objectDataAccount.bankId != null">
+                `bank_id`,
+            </if>
+            <if test="objectDataAccount.bankAccountNumber != null">
+                `bank_account_number`,
+            </if>
+            <if test="objectDataAccount.balance != null">
+                `balance`,
+            </if>
+            <if test="objectDataAccount.lastUpdateAt != null">
+                `last_update_at`,
+            </if>
+            <if test="objectDataAccount.modBalance != null">
+                `mod_balance`,
+            </if>
+            <if test="objectDataAccount.createAt != null">
+                `create_at`,
+            </if>
+            <if test="objectDataAccount.isBlock != null">
+                `is_block`,
+            </if>
+            <if test="objectDataAccount.blockAt != null">
+                `block_at`,
+            </if>
+            <if test="objectDataAccount.isDelete != null">
+                `is_delete`,
+            </if>
+            <if test="objectDataAccount.deleteAt != null">
+                `delete_at`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="objectDataAccount.bankId != null">
+                #{objectDataAccount.bankId},
+            </if>
+            <if test="objectDataAccount.bankAccountNumber != null">
+                #{objectDataAccount.bankAccountNumber},
+            </if>
+            <if test="objectDataAccount.balance != null">
+                #{objectDataAccount.balance},
+            </if>
+            <if test="objectDataAccount.lastUpdateAt != null">
+                #{objectDataAccount.lastUpdateAt},
+            </if>
+            <if test="objectDataAccount.modBalance != null">
+                #{objectDataAccount.modBalance},
+            </if>
+            <if test="objectDataAccount.createAt != null">
+                #{objectDataAccount.createAt},
+            </if>
+            <if test="objectDataAccount.isBlock != null">
+                #{objectDataAccount.isBlock},
+            </if>
+            <if test="objectDataAccount.blockAt != null">
+                #{objectDataAccount.blockAt},
+            </if>
+            <if test="objectDataAccount.isDelete != null">
+                #{objectDataAccount.isDelete},
+            </if>
+            <if test="objectDataAccount.deleteAt != null">
+                #{objectDataAccount.deleteAt},
+            </if>
+        </trim>
+    </sql>
+
+
+    <insert id="insertObjectDataAccount" parameterType="com.seungchan.distributemoney_v2.account.data.ObjectDataAccount">
+        <include refid="insertObjectDataAccount"/>
+    </insert>
+
+
+    <insert id="upsertObjectDataAccount" parameterType="com.seungchan.distributemoney_v2.account.data.ObjectDataAccount">
+        <include refid="insertObjectDataAccount"/>
+        ON DUPLICATE KEY UPDATE
+        `balance` = VALUES(`balance`),
+        `last_update_at` = VALUES(`last_update_at`),
+        `mod_balance` = VALUES(`mod_balance`),
+        `create_at` = VALUES(`create_at`),
+        `is_block` = VALUES(`is_block`),
+        `block_at` = VALUES(`block_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <sql id="insertObjectDataAccountList">
+        INSERT INTO ACCOUNT
+        (
+        `bank_id`,
+        `bank_account_number`,
+        `balance`,
+        `last_update_at`,
+        `mod_balance`,
+        `create_at`,
+        `is_block`,
+        `block_at`,
+        `is_delete`,
+        `delete_at`
+        )
+        VALUES
+        <foreach collection = "objectDataAccountList" index = "index" item = "item" separator = ",">
+            (
+            #{item.bankId},
+            #{item.bankAccountNumber},
+            #{item.balance},
+            #{item.lastUpdateAt},
+            #{item.modBalance},
+            #{item.createAt},
+            #{item.isBlock},
+            #{item.blockAt},
+            #{item.isDelete},
+            #{item.deleteAt}
+            )
+        </foreach>
+    </sql>
+
+
+    <insert id="insertObjectDataAccountList" parameterType="com.seungchan.distributemoney_v2.account.data.ObjectDataAccount">
+        <include refid="insertObjectDataAccountList"/>
+    </insert>
+
+    <insert id="upsertObjectDataAccountList" parameterType="com.seungchan.distributemoney_v2.account.data.ObjectDataAccount">
+        <include refid="insertObjectDataAccountList"/>
+        ON DUPLICATE KEY UPDATE
+        `balance` = VALUES(`balance`),
+        `last_update_at` = VALUES(`last_update_at`),
+        `mod_balance` = VALUES(`mod_balance`),
+        `create_at` = VALUES(`create_at`),
+        `is_block` = VALUES(`is_block`),
+        `block_at` = VALUES(`block_at`),
+        `is_delete` = VALUES(`is_delete`),
+        `delete_at` = VALUES(`delete_at`)
+    </insert>
+
+
+    <update id="updateObjectDataAccount" parameterType="com.seungchan.distributemoney_v2.account.data.ObjectDataAccount">
+        UPDATE ACCOUNT
+        <set>
+            <if test="objectDataAccount.balance != null">
+                `balance` = #{objectDataAccount.balance},
+            </if>
+            <if test="objectDataAccount.lastUpdateAt != null">
+                `last_update_at` = #{objectDataAccount.lastUpdateAt},
+            </if>
+            <if test="objectDataAccount.modBalance != null">
+                `mod_balance` = #{objectDataAccount.modBalance},
+            </if>
+            <if test="objectDataAccount.createAt != null">
+                `create_at` = #{objectDataAccount.createAt},
+            </if>
+            <if test="objectDataAccount.isBlock != null">
+                `is_block` = #{objectDataAccount.isBlock},
+            </if>
+            <if test="objectDataAccount.blockAt != null">
+                `block_at` = #{objectDataAccount.blockAt},
+            </if>
+            <if test="objectDataAccount.isDelete != null">
+                `is_delete` = #{objectDataAccount.isDelete},
+            </if>
+            <if test="objectDataAccount.deleteAt != null">
+                `delete_at` = #{objectDataAccount.deleteAt},
+            </if>
+        </set>
+        WHERE
+        `bank_id` = #{objectDataAccount.bankId}
+        AND
+        `bank_account_number` = #{objectDataAccount.bankAccountNumber}
+    </update>
+
+
+    <delete id="deleteObjectDataAccount">
+        DELETE FROM ACCOUNT
+        WHERE
+        `bank_id` = #{bankId}
+        AND
+        `bank_account_number` = #{bankAccountNumber}
+    </delete>
+
+</mapper>
