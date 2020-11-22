@@ -1,0 +1,3 @@
+ALTER TABLE `RESERVE_RECEIVE`
+ADD INDEX `idx-end` (`is_end` ASC) VISIBLE;
+;
