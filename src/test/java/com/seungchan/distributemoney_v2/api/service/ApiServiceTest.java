@@ -6,6 +6,7 @@ import com.seungchan.distributemoney_v2.common.exception.BusinessException;
 import com.seungchan.distributemoney_v2.common.util.DateUtil;
 import com.seungchan.distributemoney_v2.distribute.service.ObjectServiceDistribute;
 import com.seungchan.distributemoney_v2.distributeSeq.service.ObjectServiceDistributeSeq;
+import com.seungchan.distributemoney_v2.reserveReceive.service.ObjectServiceReserveReceive;
 import com.seungchan.distributemoney_v2.room.service.ObjectServiceRoom;
 import com.seungchan.distributemoney_v2.roomUser.service.ObjectServiceRoomUser;
 import com.seungchan.distributemoney_v2.user.service.ObjectServiceUser;
@@ -34,6 +35,8 @@ public class ApiServiceTest extends TestBase {
     private ObjectServiceDistribute objectServiceDistribute;
     @Autowired
     private ObjectServiceDistributeSeq objectServiceDistributeSeq;
+    @Autowired
+    private ObjectServiceReserveReceive objectServiceReserveReceive;
 
     /**
      * 테스트 환경 세팅 검증
@@ -177,6 +180,29 @@ public class ApiServiceTest extends TestBase {
     }
 
     /**
+     * 뿌리기 후 7일전 조회 가능한지 검증
+     * @throws BusinessException
+     */
+    @Test
+    public void testDistributeStatusBefore7Days() throws BusinessException {
+        // 3개 뿌리기
+        apiService.initUser(defaultUserId, defaultRoomId);
+        var response = apiService.distribute(defaultUserId, defaultRoomId, 1000L, 3);
+        var distribute = objectServiceDistribute.selectData(defaultRoomId, response.getToken());
+
+        // 조회 ok
+        var distributeStatus = apiService.distributeStatus(defaultUserId, defaultRoomId, response.getToken());
+        Assertions.assertNotNull(distributeStatus);
+
+        // 7일뒤
+        DateUtil.setTestDate(DateUtil.getDateAfterDays(distribute.getCreateAt(), 7));
+        DateUtil.setTestDate(DateUtil.getDateAfterSeconds(DateUtil.getCurrentDate(), -1));
+
+        // 조회 성공
+        apiService.distributeStatus(defaultUserId, defaultRoomId, response.getToken());
+    }
+
+    /**
      * 뿌리기 후 7일뒤 조회 못하는지 검증
      * @throws BusinessException
      */
@@ -263,6 +289,30 @@ public class ApiServiceTest extends TestBase {
      * @throws BusinessException
      */
     @Test
+    public void testReceiveBefore10Minutes() throws BusinessException {
+        // 뿌리기
+        apiService.initUser(defaultUserId, defaultRoomId);
+        var response = apiService.distribute(defaultUserId, defaultRoomId, 1000L, 1);
+        var distribute = objectServiceDistribute.selectData(defaultRoomId, response.getToken());
+
+        // 10분 뒤
+        DateUtil.setTestDate(DateUtil.getDateAfterMinutes(distribute.getCreateAt(), 9));
+        DateUtil.setTestDate(DateUtil.getDateAfterSeconds(DateUtil.getCurrentDate(), 59));
+
+        // 뿌리기 10분 스케쥴
+        objectServiceDistribute.checkDistributeEnd();
+
+        // 받기
+        String receiveUserId = defaultUserId + 1;
+        apiService.initUser(receiveUserId, defaultRoomId);
+        apiService.receive(receiveUserId, defaultRoomId, response.getToken());
+    }
+
+    /**
+     * 뿌리기는 10분 이후 받기가 불가능한지 테스트
+     * @throws BusinessException
+     */
+    @Test
     public void testReceiveAfter10Minutes() throws BusinessException {
         // 뿌리기
         apiService.initUser(defaultUserId, defaultRoomId);
@@ -273,6 +323,9 @@ public class ApiServiceTest extends TestBase {
         DateUtil.setTestDate(DateUtil.getDateAfterMinutes(distribute.getCreateAt(), 10));
         DateUtil.setTestDate(DateUtil.getDateAfterSeconds(DateUtil.getCurrentDate(), 1));
 
+        // 뿌리기 10분 스케쥴
+        objectServiceDistribute.checkDistributeEnd();
+
         // 받기
         String receiveUserId = defaultUserId + 1;
         apiService.initUser(receiveUserId, defaultRoomId);
@@ -281,11 +334,31 @@ public class ApiServiceTest extends TestBase {
         });
     }
 
+    /**
+     * 뿌리기에 대한 여러 유저의 수령 요청 경합 스케쥴링 방식 검증
+     */
     @Test
-    void reserveReceive() {
-    }
+    void reserveReceive() throws BusinessException {
+        // 뿌리기
+        apiService.initUser(defaultUserId, defaultRoomId);
+        int receiveUserCount = 5;
+        var response = apiService.distribute(defaultUserId, defaultRoomId, 1000L, receiveUserCount);
+        var distribute = objectServiceDistribute.selectData(defaultRoomId, response.getToken());
 
-    @Test
-    void checkReceive() {
+        // 받기
+        for (int i = 1; i <= receiveUserCount; i++) {
+            String receiveUserId = defaultUserId + i;
+            apiService.initUser(receiveUserId, defaultRoomId);
+            apiService.reserveReceive(receiveUserId, defaultRoomId, response.getToken());
+            objectServiceReserveReceive.checkReserveReceive();
+        }
+        String receiveUserId = defaultUserId + receiveUserCount + 1;
+        apiService.initUser(receiveUserId, defaultRoomId);
+
+        // 이미 종료되어 요청할 수 없음
+        Assertions.assertThrows(BusinessException.class, () -> {
+            apiService.reserveReceive(receiveUserId, defaultRoomId, response.getToken());
+        });
+//            objectServiceReserveReceive.checkReserveReceive();
     }
 }

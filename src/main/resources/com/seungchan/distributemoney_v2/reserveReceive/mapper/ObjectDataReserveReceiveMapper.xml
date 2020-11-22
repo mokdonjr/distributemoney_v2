@@ -21,6 +21,18 @@
     </select>
 
 
+    <select id="selectObjectDataReserveReceiveToProcess" resultType="com.seungchan.distributemoney_v2.reserveReceive.data.ObjectDataReserveReceive">
+        SELECT
+        *
+        FROM RESERVE_RECEIVE
+        WHERE is_end = 0
+        ORDER BY reserve_receive_id ASC
+        LIMIT 1
+        FOR UPDATE
+        SKIP LOCKED
+    </select>
+
+
     <sql id="insertObjectDataReserveReceive">
         INSERT INTO RESERVE_RECEIVE
         <trim prefix="(" suffix=")" suffixOverrides=",">

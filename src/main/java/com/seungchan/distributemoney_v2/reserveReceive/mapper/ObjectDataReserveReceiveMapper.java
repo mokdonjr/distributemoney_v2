@@ -11,6 +11,7 @@ public interface ObjectDataReserveReceiveMapper {
 
     ObjectDataReserveReceive selectObjectDataReserveReceive(@Param("reserveReceiveId") long reserveReceiveId);
     ObjectDataReserveReceive selectObjectDataReserveReceiveForUpdate(@Param("reserveReceiveId") long reserveReceiveId);
+    ObjectDataReserveReceive selectObjectDataReserveReceiveToProcess();
     int insertObjectDataReserveReceive(@Param("objectDataReserveReceive") ObjectDataReserveReceive objectDataReserveReceive);
     int upsertObjectDataReserveReceive(@Param("objectDataReserveReceive") ObjectDataReserveReceive objectDataReserveReceive);
     int insertObjectDataReserveReceiveList(@Param("objectDataReserveReceiveList") List<ObjectDataReserveReceive> objectDataReserveReceiveList);
